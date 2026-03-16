@@ -1,0 +1,325 @@
+/* =====================================================
+   style.css — Green Screen Remover
+   Dark theme UI
+===================================================== */
+
+/* ---- Reset & Base Styles ---- */
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: #0d0d0d;
+    color: #e0e0e0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.container {
+    max-width: 920px;
+    margin: 0 auto;
+}
+
+/* ---- Header ---- */
+header {
+    text-align: center;
+    padding: 30px 0 24px;
+}
+
+header h1 {
+    font-size: 2rem;
+    color: #00ff88;
+    margin-bottom: 8px;
+    letter-spacing: -0.5px;
+}
+
+header p {
+    color: #666;
+    font-size: 0.9rem;
+}
+
+/* ---- Upload Section: two cards side by side ---- */
+.upload-section {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+
+.upload-card {
+    flex: 1;
+    min-width: 200px;
+    background: #141414;
+    border: 2px dashed #2a2a2a;
+    border-radius: 14px;
+    cursor: pointer;
+    transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.upload-card:hover {
+    border-color: #00ff88;
+    background: #0d1a10;
+}
+
+/* The label IS the clickable area */
+.upload-card label {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 32px 20px;
+    cursor: pointer;
+    gap: 8px;
+    text-align: center;
+}
+
+.upload-icon {
+    font-size: 2.2rem;
+}
+
+.upload-title {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #ccc;
+}
+
+.upload-sub {
+    font-size: 0.78rem;
+    color: #555;
+}
+
+/* ---- Controls Section ---- */
+.controls-section {
+    background: #111;
+    border: 1px solid #1e1e1e;
+    border-radius: 14px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.control-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 24px;
+}
+
+.control-group {
+    flex: 1;
+    min-width: 170px;
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+}
+
+.control-group label {
+    font-size: 0.83rem;
+    font-weight: 600;
+    color: #999;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* Green pill badge showing the current slider value */
+.val-badge {
+    background: #00ff8820;
+    color: #00ff88;
+    border: 1px solid #00ff8840;
+    padding: 2px 8px;
+    border-radius: 20px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    min-width: 30px;
+    text-align: center;
+}
+
+/* Custom range slider styling */
+input[type="range"] {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 5px;
+    background: #2a2a2a;
+    border-radius: 3px;
+    outline: none;
+    cursor: pointer;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 17px;
+    height: 17px;
+    background: #00ff88;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: transform 0.15s;
+}
+
+input[type="range"]::-webkit-slider-thumb:hover {
+    transform: scale(1.25);
+}
+
+/* Firefox slider thumb */
+input[type="range"]::-moz-range-thumb {
+    width: 17px;
+    height: 17px;
+    background: #00ff88;
+    border-radius: 50%;
+    cursor: pointer;
+    border: none;
+}
+
+/* Color picker */
+.color-input {
+    width: 100%;
+    height: 40px;
+    border: 1px solid #2a2a2a;
+    border-radius: 8px;
+    cursor: pointer;
+    background: #1a1a1a;
+    padding: 3px;
+}
+
+/* Small helper text below each control */
+.hint {
+    font-size: 0.71rem;
+    color: #444;
+    line-height: 1.4;
+}
+
+/* ---- Preview Section ---- */
+.preview-section {
+    margin-bottom: 18px;
+}
+
+.preview-label {
+    font-size: 0.75rem;
+    color: #444;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-bottom: 10px;
+    font-weight: 600;
+}
+
+/*
+  Checkerboard pattern on the wrapper shows through transparent areas
+  of the canvas — this visually indicates what is "transparent"
+*/
+.canvas-wrapper {
+    position: relative;
+    background-color: #111;
+    background-image:
+        linear-gradient(45deg, #1a1a1a 25%, transparent 25%),
+        linear-gradient(-45deg, #1a1a1a 25%, transparent 25%),
+        linear-gradient(45deg, transparent 75%, #1a1a1a 75%),
+        linear-gradient(-45deg, transparent 75%, #1a1a1a 75%);
+    background-size: 20px 20px;
+    background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+    border-radius: 14px;
+    overflow: hidden;
+    border: 1px solid #1e1e1e;
+    min-height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#outputCanvas {
+    display: none; /* Hidden until a video is loaded */
+    max-width: 100%;
+    height: auto;
+    border-radius: 12px;
+}
+
+/* Placeholder shown before video is loaded */
+.no-video-msg {
+    text-align: center;
+    color: #333;
+    padding: 60px 20px;
+    pointer-events: none;
+}
+
+.no-video-msg div {
+    font-size: 3rem;
+    margin-bottom: 12px;
+}
+
+.no-video-msg p {
+    font-size: 0.9rem;
+}
+
+/* ---- Action Buttons ---- */
+.actions-section {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 12px;
+}
+
+.btn {
+    flex: 1;
+    padding: 13px 28px;
+    border: none;
+    border-radius: 10px;
+    font-size: 0.95rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s, opacity 0.2s;
+    letter-spacing: 0.3px;
+}
+
+.btn:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+}
+
+.btn:not(:disabled):active {
+    transform: scale(0.97);
+}
+
+.btn-play {
+    background: #00ff88;
+    color: #000;
+}
+
+.btn-play:not(:disabled):hover {
+    background: #00e07a;
+}
+
+.btn-export {
+    background: #2266ff;
+    color: #fff;
+}
+
+.btn-export:not(:disabled):hover {
+    background: #1a55ee;
+}
+
+/* ---- Export Status Message ---- */
+.export-status {
+    text-align: center;
+    font-size: 0.88rem;
+    color: #00ff88;
+    min-height: 26px;
+    padding-bottom: 30px;
+}
+
+/* ---- Responsive for small screens ---- */
+@media (max-width: 600px) {
+    header h1 {
+        font-size: 1.5rem;
+    }
+
+    .control-group {
+        min-width: 140px;
+    }
+
+    .btn {
+        padding: 11px 16px;
+        font-size: 0.88rem;
+    }
+}

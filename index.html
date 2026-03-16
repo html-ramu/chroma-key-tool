@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Green Screen Remover</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="container">
+
+        <!-- ===== HEADER ===== -->
+        <header>
+            <h1>🎬 Green Screen Remover</h1>
+            <p>Chroma key removal — 100% offline, runs entirely in your browser</p>
+        </header>
+
+        <!-- ===== UPLOAD SECTION ===== -->
+        <section class="upload-section">
+
+            <!-- Video file upload card -->
+            <div class="upload-card" id="videoDropZone">
+                <input type="file" id="videoInput" accept="video/mp4,video/*" hidden>
+                <label for="videoInput">
+                    <div class="upload-icon">🎥</div>
+                    <div class="upload-title">Upload MP4 Video</div>
+                    <div class="upload-sub">Click or drag &amp; drop</div>
+                </label>
+            </div>
+
+            <!-- Background image upload card (optional) -->
+            <div class="upload-card" id="bgDropZone">
+                <input type="file" id="bgInput" accept="image/*" hidden>
+                <label for="bgInput">
+                    <div class="upload-icon">🖼️</div>
+                    <div class="upload-title" id="bgLabel">Background Image</div>
+                    <div class="upload-sub">Optional — replaces the green screen</div>
+                </label>
+            </div>
+
+        </section>
+
+        <!-- ===== CONTROLS SECTION ===== -->
+        <section class="controls-section">
+            <div class="control-row">
+
+                <!-- How much green gets removed -->
+                <div class="control-group">
+                    <label>Green Tolerance <span class="val-badge" id="toleranceVal">50</span></label>
+                    <input type="range" id="tolerance" min="0" max="200" value="50">
+                    <div class="hint">Higher = removes more shades of green</div>
+                </div>
+
+                <!-- Smooth the edges of the cutout -->
+                <div class="control-group">
+                    <label>Edge Softness <span class="val-badge" id="softnessVal">20</span></label>
+                    <input type="range" id="softness" min="0" max="100" value="20">
+                    <div class="hint">Blends edges instead of hard cuts</div>
+                </div>
+
+                <!-- Remove green tint from subject edges -->
+                <div class="control-group">
+                    <label>Spill Suppression <span class="val-badge" id="spillVal">50</span></label>
+                    <input type="range" id="spill" min="0" max="100" value="50">
+                    <div class="hint">Removes green glow from subject edges</div>
+                </div>
+
+                <!-- Solid color fallback if no background image is set -->
+                <div class="control-group">
+                    <label>Fallback BG Color</label>
+                    <input type="color" id="bgColor" value="#1a1a2e" class="color-input">
+                    <div class="hint">Used when no background image is uploaded</div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ===== CANVAS PREVIEW ===== -->
+        <section class="preview-section">
+            <div class="preview-label">Live Preview</div>
+            <div class="canvas-wrapper">
+
+                <!-- The main visible canvas where the result is drawn -->
+                <canvas id="outputCanvas"></canvas>
+
+                <!-- Shown before any video is loaded -->
+                <div class="no-video-msg" id="noVideoMsg">
+                    <div>🎬</div>
+                    <p>Upload a video to see the preview</p>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ===== ACTION BUTTONS ===== -->
+        <section class="actions-section">
+            <button id="playBtn" class="btn btn-play" disabled>▶ Play</button>
+            <button id="exportBtn" class="btn btn-export" disabled>⬇ Export as WebM</button>
+        </section>
+
+        <!-- Export progress / status message -->
+        <div id="exportStatus" class="export-status"></div>
+
+    </div>
+
+    <!--
+        Hidden video element: this is where the video file actually plays.
+        We read frames from here and draw them onto the canvas.
+        The user never sees this element directly.
+    -->
+    <video id="sourceVideo" style="display:none" crossorigin="anonymous"></video>
+
+    <script src="script.js"></script>
+</body>
+</html>
